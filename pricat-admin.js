@@ -22,7 +22,6 @@ window.pricatfunctions = {
 			}
 		});
 
-		console.log (enlist);
 	}
 };
 

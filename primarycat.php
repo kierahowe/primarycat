@@ -20,8 +20,11 @@ class PrimaryCategories {
 	}
 
 	function init () { 
-		add_action( 'add_meta_boxes', array ($this, 'register_meta_boxes'));
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'), 1);
+
+		add_action( 'add_meta_boxes', array ($this, 'register_meta_boxes'));
+		add_action( 'save_post', array($this,'save_pricat_data'), 10, 2 );
+
 	}
 
 	function register_meta_boxes () {
@@ -43,31 +46,25 @@ class PrimaryCategories {
 		}
 	}
 
+	function display_pricat_box ($post) { 
+		
+		$primarycat = get_post_meta( $post->ID, 'primarycat', true );
 
-	function display_pricat_box () { 
 		$args = array( 'hide_empty' => false,
 						'show_option_none'   => "No Primary",
 						'name' => 'primarycat',
 						'id' => 'primarycat',
-	);
-		$cats = get_categories( $args );
-		//print_r ( $cats );
-		//
+						'selected' => $primarycat
+		);
+
 		wp_dropdown_categories( $args );
+	}
 
-
+	function save_pricat_data ( $post_id ){
+		print $_POST['primarycat'] . ' -> ' .$post_id;
+		update_post_meta( $post_id, 'primarycat', intval( $_POST['primarycat'] ) );
 	}
 }
 
 new PrimaryCategories ();
-
-//add_action("all", "dojo_showall", 20, 2);
-function dojo_showall ($x, $y = "") { 
-	global $CATFLG;
-	$CATFLG = 1; 
-	if ($CATFLG) { 
-		print "-" . $x . "-";
-	}
-}
-
 
